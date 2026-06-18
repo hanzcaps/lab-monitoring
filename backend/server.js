@@ -1,6 +1,6 @@
 /**
- * System Monitor Dashboard - Backend Bridge
- * Connects to MQTT broker and forwards metrics to WebSocket clients
+ * Lab Monitoring Dashboard - Backend Bridge
+ * Connects to MQTT broker via WebSocket and forwards metrics to Socket.IO clients
  */
 
 const express = require('express');
@@ -11,7 +11,7 @@ const mqtt = require('mqtt');
 
 // Configuration
 const PORT = process.env.PORT || 3001;
-const MQTT_BROKER_URL = process.env.MQTT_BROKER_URL || 'ws://ws-mqtt.ajojing.my.id:1884';
+const MQTT_BROKER_URL = process.env.MQTT_BROKER_URL || 'ws://ws-mqtt.ajojing.my.id:9002';
 const MQTT_TOPIC = 'lab/monitoring/#';
 const MQTT_COMMAND_TOPIC = 'lab/command';
 
@@ -34,7 +34,7 @@ app.get('/health', (req, res) => {
     status: 'ok', 
     timestamp: new Date().toISOString(),
     mqttConnected: mqttClient?.connected || false,
-    connectedClients: io.engine.clientsCount
+    connectedClients: io?.engine?.clientsCount || 0
   });
 });
 
@@ -105,16 +105,6 @@ app.post('/api/agents/:id/command', (req, res) => {
     });
   }
 });
-
-// GET /api/agents - List all known agents (from metrics)
-app.get('/api/agents', (req, res) => {
-  // This endpoint returns agents that have been seen via MQTT
-  // The actual agent list is maintained by the frontend via WebSocket
-  res.json({
-    message: 'Agent list is available via WebSocket connection',
-    note: 'Connect to WebSocket to receive real-time agent updates'
-  });
-});
 // ==================== END CLIENT CONTROL API ====================
 
 // Create HTTP server
@@ -137,7 +127,7 @@ function connectMQTT() {
   console.log(`[MQTT] Connecting to broker: ${MQTT_BROKER_URL}`);
   
   mqttClient = mqtt.connect(MQTT_BROKER_URL, {
-    clientId: `system-monitor-backend-${Date.now()}`,
+    clientId: `lab-monitor-backend-${Date.now()}`,
     clean: true,
     reconnectPeriod: 3000,
     connectTimeout: 10000,
@@ -227,9 +217,7 @@ function startServer() {
 // Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('[Server] Received SIGTERM, shutting down gracefully...');
-  if (mqttClient) {
-    mqttClient.end();
-  }
+  if (mqttClient) mqttClient.end();
   server.close(() => {
     console.log('[Server] ✓ Server closed');
     process.exit(0);
@@ -238,9 +226,7 @@ process.on('SIGTERM', () => {
 
 process.on('SIGINT', () => {
   console.log('[Server] Received SIGINT, shutting down gracefully...');
-  if (mqttClient) {
-    mqttClient.end();
-  }
+  if (mqttClient) mqttClient.end();
   server.close(() => {
     console.log('[Server] ✓ Server closed');
     process.exit(0);

@@ -9,7 +9,6 @@ import os
 import paho.mqtt.client as mqtt
 from datetime import datetime
 from threading import Lock
-import shlex
 
 # GPU Monitoring imports
 try:
