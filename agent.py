@@ -414,8 +414,8 @@ def _get_amd_gpu_info_linux():
 # --- KONFIGURASI ---
 HOSTNAME = socket.gethostname()
 TOPIC = f"lab/monitoring/{HOSTNAME}"
-BROKER_URL = "192.168.110.16"
-PORT = 1883
+BROKER_URL = "ajojing.my.id"
+PORT = 1884
 PING_TARGET = "8.8.8.8"
 
 def get_cpu_name():
