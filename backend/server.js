@@ -11,7 +11,7 @@ const mqtt = require('mqtt');
 
 // Configuration
 const PORT = process.env.PORT || 3001;
-const MQTT_BROKER_URL = process.env.MQTT_BROKER_URL || 'ws://ws-mqtt.ajojing.my.id:9002';
+const MQTT_BROKER_URL = process.env.MQTT_BROKER_URL || 'ws://ws.mqtt.ajojing.my.id:9002';
 const MQTT_TOPIC = 'lab/monitoring/#';
 const MQTT_COMMAND_TOPIC = 'lab/command';
 

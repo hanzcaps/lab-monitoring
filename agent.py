@@ -413,7 +413,7 @@ def _get_amd_gpu_info_linux():
 # --- KONFIGURASI ---
 HOSTNAME = socket.gethostname()
 TOPIC = f"lab/monitoring/{HOSTNAME}"
-BROKER_URL = "ajojing.my.id"
+BROKER_URL = "mqtt.ajojing.my.id"
 PORT = 1884
 PING_TARGET = "8.8.8.8"
 
