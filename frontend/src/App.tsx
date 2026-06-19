@@ -5,7 +5,7 @@ import { AgentList, AgentDetail } from './components';
 import { AgentMetrics, AgentState } from './types';
 import { cn } from './lib/utils';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || undefined;
 
 function App() {
   const [connected, setConnected] = useState(false);

@@ -11,7 +11,7 @@ const mqtt = require('mqtt');
 
 // Configuration
 const PORT = process.env.PORT || 3001;
-const MQTT_BROKER_URL = process.env.MQTT_BROKER_URL || 'ws://ws.mqtt.ajojing.my.id:9002';
+const MQTT_BROKER_URL = process.env.MQTT_BROKER_URL || 'ws://ws-mqtt.ajojing.my.id:9002';
 const MQTT_TOPIC = 'lab/monitoring/#';
 const MQTT_COMMAND_TOPIC = 'lab/command';
 
@@ -27,6 +27,18 @@ app.use(cors({
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Serve built frontend (React dashboard)
+const path = require('path');
+app.use(express.static(path.join(__dirname, '..', 'frontend', 'dist')));
+
+// Fallback: serve index.html for all non-API routes (SPA support)
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/health') || req.path.startsWith('/socket.io')) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html'));
+});
 
 // Basic health check endpoint
 app.get('/health', (req, res) => {
