@@ -1,0 +1,14 @@
+# Cloudflare Tunnel Config untuk ajojing.my.id
+# Config terpisah dari temen, tidak akan tabrakan
+
+tunnel: 4d922bbe-0957-404e-8307-bec8d4ed40fb
+
+credentials-file: /home/ikyy/.cloudflared/4d922bbe-0957-404e-8307-bec8d4ed40fb.json
+
+ingress:
+  # Agent konek via WebSocket MQTT ke subdomain ini
+  - hostname: mqtt-ws.ajojing.my.id
+    service: http://localhost:9001
+
+  # Jika tidak cocok dengan hostname di atas, akan ditolak (404)
+  - service: http_status:404

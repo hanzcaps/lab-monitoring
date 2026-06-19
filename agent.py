@@ -410,11 +410,10 @@ def _get_amd_gpu_info_linux():
         print(f"[Debug] AMD sysfs detection failed: {e}")
     return gpus
 
-# --- KONFIGURASI ---
 HOSTNAME = socket.gethostname()
-TOPIC = f"lab/monitoring/{HOSTNAME}"
-BROKER_URL = "192.168.3.246"
-PORT = 1884
+TOPIC = f"ajojing/monitoring/{HOSTNAME}"
+BROKER_URL = "mqtt.ajojing.my.id"  # Domain Cloudflare
+PORT = 443                        # Port 443 untuk Cloudflare
 PING_TARGET = "8.8.8.8"
 
 def get_cpu_name():
@@ -1009,7 +1008,7 @@ def on_command_message(client, userdata, msg):
 # Support paho-mqtt v1.x dan v2.x
 def on_connect(client, userdata, connect_flags, rc, properties=None):
     if rc == 0:
-        print(f"[✓] MQTT Terhubung ke {BROKER_URL}:{PORT}")
+        print(f"[✓] MQTT Terhubung ke {BROKER_URL}:{PORT} via WebSocket+SSL")
         # Subscribe ke command topic
         command_topic = f"lab/command/{HOSTNAME}"
         client.subscribe(command_topic)
@@ -1024,11 +1023,20 @@ def on_disconnect(client, userdata, disconnect_flags, rc, properties=None):
 def on_publish(client, userdata, mid, reason_code=None, properties=None):
     pass
 
+# INI BAGIAN YANG DIUBAH - Tambahkan tls_set() dan ws_set_options()
 try:
     from paho.mqtt.enums import CallbackAPIVersion
-    client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2)
+    client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, transport='websockets')
+    # AKTIFKAN SSL/TLS UNTUK CLOUDFLARE
+    client.tls_set()
+    # SET WEB SOCKET PATH
+    client.ws_set_options(path="/mqtt")
 except (ImportError, AttributeError):
-    client = mqtt.Client()
+    client = mqtt.Client(transport='websockets')
+    # AKTIFKAN SSL/TLS UNTUK CLOUDFLARE
+    client.tls_set()
+    # SET WEB SOCKET PATH
+    client.ws_set_options(path="/mqtt")
 
 client.on_connect = on_connect
 client.on_disconnect = on_disconnect
