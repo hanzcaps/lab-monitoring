@@ -411,7 +411,7 @@ def _get_amd_gpu_info_linux():
     return gpus
 
 HOSTNAME = socket.gethostname()
-TOPIC = f"ajojing/monitoring/{HOSTNAME}"
+TOPIC = f"lab/monitoring/ajojing/{HOSTNAME}"
 BROKER_URL = "mqtt.ajojing.my.id"  # Domain Cloudflare
 PORT = 443                        # Port 443 untuk Cloudflare
 PING_TARGET = "8.8.8.8"

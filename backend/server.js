@@ -11,9 +11,9 @@ const mqtt = require('mqtt');
 
 // Configuration
 const PORT = process.env.PORT || 3001;
-const MQTT_BROKER_URL = process.env.MQTT_BROKER_URL || 'mqtt://10.190.143.25:1883';
-const MQTT_TOPIC = 'ajojing/monitoring/#';
-const MQTT_COMMAND_TOPIC = 'lab/command-rafa';
+const MQTT_BROKER_URL = process.env.MQTT_BROKER_URL || 'mqtt://mqtt.ajojing.my.id:443';
+const MQTT_TOPIC = 'lab/monitoring/ajojing/#';
+const MQTT_COMMAND_TOPIC = 'lab/command';
 
 // Initialize Express app
 const app = express();
@@ -143,7 +143,9 @@ function connectMQTT() {
     clean: true,
     reconnectPeriod: 3000,
     connectTimeout: 10000,
-    rejectUnauthorized: false
+    rejectUnauthorized: false,
+    protocol: 'wss',
+    path: '/mqtt'
   });
 
   mqttClient.on('connect', () => {
